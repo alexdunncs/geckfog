@@ -23,8 +23,10 @@ void blink(int times) {
   }
 }
 
+
 OutputDevice humidifier = OutputDevice(HUMIDIFIER_PIN);
-DewmakerStrategy humidifierStrategy = DewmakerStrategy(500, 2000);
+//OutputDevice humidifier = OutputDevice(LED_BUILTIN);
+DewmakerStrategy humidifierStrategy = DewmakerStrategy(15000, 30000);
 OutputDeviceController humidifierController = OutputDeviceController(humidifier, &humidifierStrategy);
 
 
@@ -34,26 +36,29 @@ void setup() {
   pinMode(HUMIDIFIER_PIN, OUTPUT);
 
   Serial.begin(57600);
-  WiFi.begin(Secret::ssid, Secret::password);
-
-  Serial.println("Connecting to wifi...");
-  while (WiFi.status() != WL_CONNECTED) {  //Wait for the WiFI connection completion
-    delay(500);
-    Serial.println("Waiting for connection");
-  }
-  Serial.println("Connected!");
+  delay(100);
+//  WiFi.begin(Secret::ssid, Secret::password);
+//
+//  Serial.println("Connecting to wifi...");
+//  while (WiFi.status() != WL_CONNECTED) {  //Wait for the WiFI connection completion
+//    delay(500);
+//    Serial.println("Waiting for connection");
+//  }
+//  Serial.println("Connected!");
+  Serial.println("Setup Complete!");
 }
 
 
 
 void loop() {
+  humidifierController.proc();
 
-  Serial.println(InternetTime::getUtcString());
-  digitalWrite(LED_BUILTIN, LOW);
-  digitalWrite(PIN_D1, HIGH);
-  delay(10000);
-  
-  digitalWrite(LED_BUILTIN, HIGH);
-  digitalWrite(PIN_D1, LOW);
-  delay(50000);
+//  Serial.println(InternetTime::getUtcString());
+//  digitalWrite(LED_BUILTIN, LOW);
+//  digitalWrite(PIN_D1, HIGH);
+//  delay(10000);
+//  
+//  digitalWrite(LED_BUILTIN, HIGH);
+//  digitalWrite(PIN_D1, LOW);
+//  delay(50000);
 }
