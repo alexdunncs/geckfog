@@ -12,12 +12,10 @@ bool DewmakerStrategy::deactivationPeriodExceeded() {
 
 uint8_t DewmakerStrategy::getControlValue() {
   if (activationPeriodExceeded()) {
-    Serial.println("Hum. off");
     this->lastControlValue = 0;
     this->lastOutputChangeAt = millis();
     return 0;
   } else if (deactivationPeriodExceeded()) {
-    Serial.println("Hum. on");
     this->lastControlValue = 255;
     this->lastOutputChangeAt = millis();
     return 255;

@@ -24,10 +24,9 @@ void blink(int times) {
 }
 
 
-OutputDevice humidifier = OutputDevice(HUMIDIFIER_PIN);
-//OutputDevice humidifier = OutputDevice(LED_BUILTIN);
-DewmakerStrategy humidifierStrategy = DewmakerStrategy(15000, 30000);
-OutputDeviceController humidifierController = OutputDeviceController(humidifier, &humidifierStrategy);
+OutputDevice humidifier;
+DewmakerStrategy humidifierStrategy;
+OutputDeviceController humidifierController;
 
 
 void setup() {
@@ -36,7 +35,12 @@ void setup() {
   pinMode(HUMIDIFIER_PIN, OUTPUT);
 
   Serial.begin(57600);
-  delay(100);
+  delay(100); // Give sufficient time to initialise.
+
+  humidifier = OutputDevice(HUMIDIFIER_PIN, "Humidifier");
+  humidifierStrategy = DewmakerStrategy(15000, 30000);
+  humidifierController = OutputDeviceController(humidifier, &humidifierStrategy);
+  
 //  WiFi.begin(Secret::ssid, Secret::password);
 //
 //  Serial.println("Connecting to wifi...");
