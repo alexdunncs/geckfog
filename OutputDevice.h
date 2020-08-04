@@ -7,6 +7,7 @@
 class OutputDevice {
   int pin;
   String name;
+  uint8_t defaultOutputValue;
 
   public:
   void activate();
@@ -14,9 +15,11 @@ class OutputDevice {
   void setOutput(uint8_t controlValue);
   String getName();
 
+  void init();
+
   OutputDevice(uint8_t pin);
   OutputDevice(uint8_t pin, String name);
- 
+  OutputDevice(uint8_t pin, String name, uint8_t defaultOutputValue);
 };
 
 #endif

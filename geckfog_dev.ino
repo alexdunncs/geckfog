@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include <TimeLib.h>
 
 //Requires installation of the ArduinoJson library - use the Arduino Library Manager
 
@@ -23,24 +24,21 @@ void blink(int times) {
   }
 }
 
+OutputDevice humidifier = OutputDevice(HUMIDIFIER_PIN, "Humidifier");
+DewmakerStrategy humidifierStrategy = DewmakerStrategy(15000, 45000);
+OutputDeviceController humidifierController = OutputDeviceController(humidifier, &humidifierStrategy);
 
-OutputDevice humidifier;
-DewmakerStrategy humidifierStrategy;
-OutputDeviceController humidifierController;
+bool halted = false;
 
+const unsigned long int runtimeLimit = 3 * 60 * 60 * 1000; //Run for three hours
+//const unsigned long int runtimeLimit = 2 * 60 * 1000; //Run for two minutes
 
 void setup() {
   // initialize pins
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(HUMIDIFIER_PIN, OUTPUT);
 
   Serial.begin(57600);
-  delay(100); // Give sufficient time to initialise.
-
-  humidifier = OutputDevice(HUMIDIFIER_PIN, "Humidifier");
-  humidifierStrategy = DewmakerStrategy(15000, 30000);
-  humidifierController = OutputDeviceController(humidifier, &humidifierStrategy);
-  
+  delay(100); // Give time to initialise.
 //  WiFi.begin(Secret::ssid, Secret::password);
 //
 //  Serial.println("Connecting to wifi...");
@@ -49,20 +47,26 @@ void setup() {
 //    Serial.println("Waiting for connection");
 //  }
 //  Serial.println("Connected!");
+
+  humidifier.init();
   Serial.println("Setup Complete!");
 }
 
 
 
 void loop() {
-  humidifierController.proc();
+  
+  if (millis() < runtimeLimit) {
+    humidifierController.proc();
+  } else {
+    if (!halted) { 
+      Serial.println("COMPLETED. HALTING");  
+      humidifier.deactivate();
+      halted = true;
+    }
 
-//  Serial.println(InternetTime::getUtcString());
-//  digitalWrite(LED_BUILTIN, LOW);
-//  digitalWrite(PIN_D1, HIGH);
-//  delay(10000);
-//  
-//  digitalWrite(LED_BUILTIN, HIGH);
-//  digitalWrite(PIN_D1, LOW);
-//  delay(50000);
+    // Provide visual indication of halted state
+    blink(5);
+    delay(1000);
+  }
 }

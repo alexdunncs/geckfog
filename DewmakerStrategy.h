@@ -6,7 +6,8 @@
 #include <stdint.h>
 
 class DewmakerStrategy: public OpenLoopControlStrategy {
-  int lastControlValue = 0;
+  int defaultControlValue = 255;
+  int lastControlValue = defaultControlValue;
   
   unsigned long int activationPeriodMilliseconds;
   unsigned long int deactivationPeriodMilliseconds;

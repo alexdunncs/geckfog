@@ -23,10 +23,13 @@ String OutputDevice::getName() {
   return this->name;
 }
 
-OutputDevice::OutputDevice(uint8_t pin): pin(pin), name("unnamed-device") {
+void OutputDevice::init() {
   pinMode(this->pin, OUTPUT);
+  this->setOutput(this->defaultOutputValue);
 }
 
-OutputDevice::OutputDevice(uint8_t pin, String name): pin(pin), name(name){
-  pinMode(this->pin, OUTPUT);
-}
+OutputDevice::OutputDevice(uint8_t pin): OutputDevice(pin, "unnamed-device", 0) {}
+
+OutputDevice::OutputDevice(uint8_t pin, String name): OutputDevice(pin, name, 0){}
+
+OutputDevice::OutputDevice(uint8_t pin, String name, uint8_t defaultOutputValue): pin(pin), name(name), defaultOutputValue(defaultOutputValue) {}
