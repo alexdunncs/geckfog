@@ -8,6 +8,7 @@
 #include "OutputDevice.h"
 #include "OutputDeviceController.h"
 #include "DewmakerStrategy.h"
+#include "OnOffTimer.h"
 
 
 #include "pin_config_wemos_d1_mini_pro.h"
@@ -25,13 +26,9 @@ void blink(int times) {
 }
 
 OutputDevice humidifier = OutputDevice(HUMIDIFIER_PIN, "Humidifier");
-DewmakerStrategy humidifierStrategy = DewmakerStrategy(15000, 45000);
+DewmakerStrategy humidifierStrategy = DewmakerStrategy(10000, 30000);
 OutputDeviceController humidifierController = OutputDeviceController(humidifier, &humidifierStrategy);
-
-bool halted = false;
-
-const unsigned long int runtimeLimit = 3 * 60 * 60 * 1000; //Run for three hours
-//const unsigned long int runtimeLimit = 2 * 60 * 1000; //Run for two minutes
+OnOffTimer timer = OnOffTimer(1000*60*60*3, 1000*60*60*9); //on for 3 hours out of every 12 hours
 
 void setup() {
   // initialize pins
@@ -39,14 +36,14 @@ void setup() {
 
   Serial.begin(57600);
   delay(100); // Give time to initialise.
-//  WiFi.begin(Secret::ssid, Secret::password);
-//
-//  Serial.println("Connecting to wifi...");
-//  while (WiFi.status() != WL_CONNECTED) {  //Wait for the WiFI connection completion
-//    delay(500);
-//    Serial.println("Waiting for connection");
-//  }
-//  Serial.println("Connected!");
+  //  WiFi.begin(Secret::ssid, Secret::password);
+  //
+  //  Serial.println("Connecting to wifi...");
+  //  while (WiFi.status() != WL_CONNECTED) {  //Wait for the WiFI connection completion
+  //    delay(500);
+  //    Serial.println("Waiting for connection");
+  //  }
+  //  Serial.println("Connected!");
 
   humidifier.init();
   Serial.println("Setup Complete!");
@@ -55,18 +52,11 @@ void setup() {
 
 
 void loop() {
-  
-  if (millis() < runtimeLimit) {
-    humidifierController.proc();
-  } else {
-    if (!halted) { 
-      Serial.println("COMPLETED. HALTING");  
-      humidifier.deactivate();
-      halted = true;
-    }
 
-    // Provide visual indication of halted state
-    blink(5);
-    delay(1000);
+  if (timer.isActive()) {
+    humidifierController.enable();
+  } else {
+    humidifierController.disable();
   }
+  
 }
