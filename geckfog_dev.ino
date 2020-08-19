@@ -8,6 +8,7 @@
 #include "OutputDevice.h"
 #include "OutputDeviceController.h"
 #include "DewmakerStrategy.h"
+#include "ConstantValueControlStrategy.h"
 #include "ControlStrategyScheduler.h"
 
 
@@ -26,10 +27,11 @@ void blink(int times) {
 }
 
 OutputDevice humidifier = OutputDevice(HUMIDIFIER_PIN, "Humidifier");
-DewmakerStrategy humidifierStrategy = DewmakerStrategy(10000, 30000);
-OutputDeviceController humidifierController = OutputDeviceController(humidifier, &humidifierStrategy);
-ControlStrategyScheduler scheduler = ControlStrategyScheduler(1000*10, 1000*20);
-//ControlStrategyScheduler scheduler = ControlStrategyScheduler(1000*60*60*3, 1000*60*60*9); //on for 3 hours out of every 12 hours
+DewmakerStrategy dewmakerStrategy = DewmakerStrategy(10000, 30000);
+ConstantValueControlStrategy offStrategy = ConstantValueControlStrategy(0);
+ConstantValueControlStrategy onStrategy = ConstantValueControlStrategy(255);
+
+OutputDeviceController humidifierController = OutputDeviceController(humidifier);
 
 void setup() {
   // initialize pins
@@ -46,19 +48,17 @@ void setup() {
   //  }
   //  Serial.println("Connected!");
 
+  
+  humidifierController.appendStrategy(&dewmakerStrategy, 15000);
+//  humidifierController.appendStrategy(&onStrategy, 5000);
+  humidifierController.appendStrategy(&offStrategy, 30000);
+
   humidifier.init();
-  scheduler.printSchedule();
   Serial.println("Setup Complete!");
 }
 
 
 
 void loop() {
-
-  if (scheduler.isActive()) {
-    humidifierController.enable();
-  } else {
-    humidifierController.disable();
-  }
-  
+  humidifierController.proc();
 }

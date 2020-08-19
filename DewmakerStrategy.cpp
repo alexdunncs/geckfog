@@ -24,6 +24,11 @@ uint8_t DewmakerStrategy::getControlValue() {
   }
 }
 
-DewmakerStrategy::DewmakerStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds): activationPeriodMilliseconds(activationPeriodMilliseconds), deactivationPeriodMilliseconds(deactivationPeriodMilliseconds), lastOutputChangeAt(0) {
+void DewmakerStrategy::reset() {
+  this->lastControlValue = this->defaultControlValue;
+  this->lastOutputChangeAt = millis();
+}
 
+DewmakerStrategy::DewmakerStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds): activationPeriodMilliseconds(activationPeriodMilliseconds), deactivationPeriodMilliseconds(deactivationPeriodMilliseconds), lastOutputChangeAt(0) {
+  this->strategyName = "DewmakerStrategy";
 }

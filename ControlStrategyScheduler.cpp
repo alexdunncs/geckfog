@@ -2,40 +2,71 @@
 
 #include <Arduino.h>
 
-void ControlStrategyScheduler::toggle() {
-  this->active = !this->active;
-  this->lastToggle = millis();
-  this->nextToggle = this->lastToggle + (this->active ? this->activeDuration : this->inactiveDuration);
-  Serial.print("Toggling control ");
-  Serial.println(this->active ? "ON" : "OFF");
+void ControlStrategyScheduler::incrementActiveSchedule() {
+  this->activeStrategyIdx = (this->activeStrategyIdx + 1) % this->strategyCount;
+  this->lastStrategyChange = millis();
+  this->nextStrategyChange = this->lastStrategyChange + (this->getActiveSchedule().duration);
+  this->printNewStrategyMessage();
+  this->getActiveStrategy()->reset();
 }
 
-bool ControlStrategyScheduler::isActive() {
+void ControlStrategyScheduler::printNewStrategyMessage() {
+    Serial.print("Activated new strategy: ");
+    Serial.println(this->strategySchedules[this->activeStrategyIdx].strategy->getName());
+}
 
-  if (this->nextToggle > this->lastToggle && millis() >= nextToggle) {
-    this->toggle();
-  } else if (this->nextToggle < this->lastToggle && millis() < this->lastToggle && millis() > this->nextToggle) {
-    this->toggle();
+StrategySchedule ControlStrategyScheduler::getActiveSchedule() {
+//  Serial.print("Last: ");
+//  Serial.print(this->lastStrategyChange);
+//  Serial.print("    Current: ");
+//  Serial.print(millis());
+//  Serial.print("    Next: ");
+//  Serial.println(this->nextStrategyChange);
+  
+  if (this->nextStrategyChange > this->lastStrategyChange && millis() >= nextStrategyChange) {
+    this->incrementActiveSchedule();
+  } else if (this->nextStrategyChange < this->lastStrategyChange && millis() < this->lastStrategyChange && millis() > this->nextStrategyChange) {
+    this->incrementActiveSchedule();
+    this->printNewStrategyMessage();
   }
 
-  return this->active;
+  return this->strategySchedules[activeStrategyIdx];
 }
 
-void ControlStrategyScheduler::printSchedule() {
-  float activeHours = this->activeDuration / 1000.0 / 60.0 / 60.0;
-  float inactiveHours = this->inactiveDuration / 1000.0 / 60.0 / 60.0;
-  Serial.print(activeHours);
-  Serial.print("hrs on, ");
-  Serial.print(inactiveHours);
-  Serial.println("hrs off");
+void ControlStrategyScheduler::appendStrategyToSchedule(ControlStrategy* strategy, unsigned long int duration) {
+  StrategySchedule schedule = StrategySchedule(strategy, duration);
+  if (this->strategyCount < this->MAX_STRATEGY_COUNT) {   
+    this->strategySchedules[this->strategyCount] = schedule;
+    this->strategyCount++;
+    Serial.print("Added new strategy to schedule: ");
+    Serial.println(strategy->getName());
+  } else {
+    Serial.println("Failed to add stratedy to scheduler: Max strategy count exceeded.");
+  }
+
+  if (this->strategyCount == 1) {
+    this->nextStrategyChange = millis() + duration;
+  }
+}
+
+ControlStrategy* ControlStrategyScheduler::getActiveStrategy() {
+  if (this->strategyCount > 0) {
+    return this->getActiveSchedule().strategy;  
+  } else {
+    return nullptr;  
+  }
   
 }
 
-ControlStrategyScheduler::ControlStrategyScheduler(unsigned long int activeDuration, unsigned long int inactiveDuration, bool initiallyActive):
-  activeDuration(activeDuration), 
-  inactiveDuration(inactiveDuration), 
-  active(!initiallyActive) {
-  toggle();
+void ControlStrategyScheduler::printSchedule() {
+  Serial.println("Yet to implement ControlStrategyScheduler::printSchedule()");
+//  float activeHours = this->activeDuration / 1000.0 / 60.0 / 60.0;
+//  float inactiveHours = this->inactiveDuration / 1000.0 / 60.0 / 60.0;
+//  Serial.print(activeHours);
+//  Serial.print("hrs on, ");
+//  Serial.print(inactiveHours);
+//  Serial.println("hrs off");
+  
 }
 
-ControlStrategyScheduler::ControlStrategyScheduler(unsigned long int activeDuration, unsigned long int inactiveDuration): ControlStrategyScheduler(activeDuration, inactiveDuration, true) {}
+ControlStrategyScheduler::ControlStrategyScheduler() {}

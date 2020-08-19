@@ -18,6 +18,7 @@ class DewmakerStrategy: public OpenLoopControlStrategy {
   
   public:
   uint8_t getControlValue();
+  void reset();
 
   DewmakerStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds);
 };

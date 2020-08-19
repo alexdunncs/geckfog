@@ -8,17 +8,24 @@ void OutputDeviceController::printControlValue() {
   Serial.println(this->latestControlValue);
 }
 
-void OutputDeviceController::setStrategy(ControlStrategy &newStrategy) {
-  this->strategy = &newStrategy;
+void OutputDeviceController::appendStrategy(ControlStrategy* newStrategy, unsigned long int duration) {
+  this->scheduler.appendStrategyToSchedule(newStrategy, duration);
   this->proc();
 }
 
 void OutputDeviceController::proc() {
   uint8_t previousControlValue = this->latestControlValue;
+  ControlStrategy* activeStrategy = this->scheduler.getActiveStrategy();
 
-  if (this->enabled) {
-    this->latestControlValue = this->strategy->getControlValue();
-  }
+  if (this->enabled && activeStrategy) { 
+//    Serial.print("Got active strategy: ");
+//    Serial.println(activeStrategy->getName());
+    this->latestControlValue = activeStrategy->getControlValue(); 
+//    Serial.print("Got value: ");
+//    Serial.println(this->latestControlValue);
+  } //else {
+//    Serial.println("No strategy is active");
+//  }
   
   this->device.setOutput(this->latestControlValue);
   
@@ -56,6 +63,4 @@ void OutputDeviceController::disable() {
   this->disable(0);
 }
 
-OutputDeviceController::OutputDeviceController(OutputDevice &device, ControlStrategy* strategy): device(device), strategy(strategy){
-    this->printControlValue();
-}
+OutputDeviceController::OutputDeviceController(OutputDevice &device): device(device){}
