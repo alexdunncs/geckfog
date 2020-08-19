@@ -46,6 +46,7 @@ void setup() {
   //  Serial.println("Connected!");
 
   humidifier.init();
+  timer.printSchedule();
   Serial.println("Setup Complete!");
 }
 

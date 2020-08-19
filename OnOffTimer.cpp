@@ -21,6 +21,16 @@ bool OnOffTimer::isActive() {
   return this->active;
 }
 
+void OnOffTimer::printSchedule() {
+  float activeHours = this->activeDuration / 1000.0 / 60.0 / 60.0;
+  float inactiveHours = this->inactiveDuration / 1000.0 / 60.0 / 60.0;
+  Serial.print(activeHours);
+  Serial.print("hrs on, ");
+  Serial.print(inactiveHours);
+  Serial.println("hrs off");
+  
+}
+
 OnOffTimer::OnOffTimer(unsigned long int activeDuration, unsigned long int inactiveDuration, bool initiallyActive):
   activeDuration(activeDuration), 
   inactiveDuration(inactiveDuration), 

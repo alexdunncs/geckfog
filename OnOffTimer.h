@@ -13,6 +13,7 @@ class OnOffTimer {
   public:
 
   bool isActive();
+  void printSchedule();
 
   OnOffTimer(unsigned long int activeDuration, unsigned long int inactiveDuration);
   OnOffTimer(unsigned long int activeDuration, unsigned long int inactiveDuration, bool initiallyActive);
