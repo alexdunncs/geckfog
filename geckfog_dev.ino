@@ -8,7 +8,7 @@
 #include "OutputDevice.h"
 #include "OutputDeviceController.h"
 #include "DewmakerStrategy.h"
-#include "OnOffTimer.h"
+#include "ControlStrategyScheduler.h"
 
 
 #include "pin_config_wemos_d1_mini_pro.h"
@@ -28,7 +28,8 @@ void blink(int times) {
 OutputDevice humidifier = OutputDevice(HUMIDIFIER_PIN, "Humidifier");
 DewmakerStrategy humidifierStrategy = DewmakerStrategy(10000, 30000);
 OutputDeviceController humidifierController = OutputDeviceController(humidifier, &humidifierStrategy);
-OnOffTimer timer = OnOffTimer(1000*60*60*3, 1000*60*60*9); //on for 3 hours out of every 12 hours
+ControlStrategyScheduler scheduler = ControlStrategyScheduler(1000*10, 1000*20);
+//ControlStrategyScheduler scheduler = ControlStrategyScheduler(1000*60*60*3, 1000*60*60*9); //on for 3 hours out of every 12 hours
 
 void setup() {
   // initialize pins
@@ -46,7 +47,7 @@ void setup() {
   //  Serial.println("Connected!");
 
   humidifier.init();
-  timer.printSchedule();
+  scheduler.printSchedule();
   Serial.println("Setup Complete!");
 }
 
@@ -54,7 +55,7 @@ void setup() {
 
 void loop() {
 
-  if (timer.isActive()) {
+  if (scheduler.isActive()) {
     humidifierController.enable();
   } else {
     humidifierController.disable();

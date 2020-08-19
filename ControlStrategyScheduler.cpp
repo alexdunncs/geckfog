@@ -1,8 +1,8 @@
-#include "OnOffTimer.h"
+#include "ControlStrategyScheduler.h"
 
 #include <Arduino.h>
 
-void OnOffTimer::toggle() {
+void ControlStrategyScheduler::toggle() {
   this->active = !this->active;
   this->lastToggle = millis();
   this->nextToggle = this->lastToggle + (this->active ? this->activeDuration : this->inactiveDuration);
@@ -10,7 +10,7 @@ void OnOffTimer::toggle() {
   Serial.println(this->active ? "ON" : "OFF");
 }
 
-bool OnOffTimer::isActive() {
+bool ControlStrategyScheduler::isActive() {
 
   if (this->nextToggle > this->lastToggle && millis() >= nextToggle) {
     this->toggle();
@@ -21,7 +21,7 @@ bool OnOffTimer::isActive() {
   return this->active;
 }
 
-void OnOffTimer::printSchedule() {
+void ControlStrategyScheduler::printSchedule() {
   float activeHours = this->activeDuration / 1000.0 / 60.0 / 60.0;
   float inactiveHours = this->inactiveDuration / 1000.0 / 60.0 / 60.0;
   Serial.print(activeHours);
@@ -31,11 +31,11 @@ void OnOffTimer::printSchedule() {
   
 }
 
-OnOffTimer::OnOffTimer(unsigned long int activeDuration, unsigned long int inactiveDuration, bool initiallyActive):
+ControlStrategyScheduler::ControlStrategyScheduler(unsigned long int activeDuration, unsigned long int inactiveDuration, bool initiallyActive):
   activeDuration(activeDuration), 
   inactiveDuration(inactiveDuration), 
   active(!initiallyActive) {
   toggle();
 }
 
-OnOffTimer::OnOffTimer(unsigned long int activeDuration, unsigned long int inactiveDuration): OnOffTimer(activeDuration, inactiveDuration, true) {}
+ControlStrategyScheduler::ControlStrategyScheduler(unsigned long int activeDuration, unsigned long int inactiveDuration): ControlStrategyScheduler(activeDuration, inactiveDuration, true) {}
