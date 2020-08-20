@@ -29,6 +29,19 @@ void DutyCycleStrategy::reset() {
   this->lastOutputChangeAt = millis();
 }
 
-DutyCycleStrategy::DutyCycleStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds): activationPeriodMilliseconds(activationPeriodMilliseconds), deactivationPeriodMilliseconds(deactivationPeriodMilliseconds), lastOutputChangeAt(0) {
+DutyCycleStrategy::DutyCycleStrategy(
+    unsigned long int activationPeriodMilliseconds, 
+    unsigned long int deactivationPeriodMilliseconds, 
+    uint8_t defaultControlValue): 
+    activationPeriodMilliseconds(activationPeriodMilliseconds), 
+    deactivationPeriodMilliseconds(deactivationPeriodMilliseconds), 
+    defaultControlValue(defaultControlValue),
+    lastControlValue(defaultControlValue),
+    lastOutputChangeAt(millis()) {
   this->strategyName = "DutyCycleStrategy";
 }
+
+DutyCycleStrategy::DutyCycleStrategy(
+    unsigned long int activationPeriodMilliseconds, 
+    unsigned long int deactivationPeriodMilliseconds): 
+    DutyCycleStrategy(activationPeriodMilliseconds, deactivationPeriodMilliseconds, 255){}

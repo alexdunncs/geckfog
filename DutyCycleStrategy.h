@@ -6,8 +6,8 @@
 #include <stdint.h>
 
 class DutyCycleStrategy: public OpenLoopControlStrategy {
-  int defaultControlValue = 255;
-  int lastControlValue = defaultControlValue;
+  uint8_t defaultControlValue;
+  uint8_t lastControlValue;
   
   unsigned long int activationPeriodMilliseconds;
   unsigned long int deactivationPeriodMilliseconds;
@@ -20,6 +20,7 @@ class DutyCycleStrategy: public OpenLoopControlStrategy {
   uint8_t getControlValue();
   void reset();
 
+  DutyCycleStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds, uint8_t defaultControlValue);
   DutyCycleStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds);
 };
 
