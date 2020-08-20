@@ -7,7 +7,7 @@
 #include "InternetTime.h"
 #include "OutputDevice.h"
 #include "OutputDeviceController.h"
-#include "DewmakerStrategy.h"
+#include "DutyCycleStrategy.h"
 #include "ConstantValueControlStrategy.h"
 #include "ControlStrategyScheduler.h"
 
@@ -27,7 +27,7 @@ void blink(int times) {
 }
 
 OutputDevice humidifier = OutputDevice(HUMIDIFIER_PIN, "Humidifier");
-DewmakerStrategy dewmakerStrategy = DewmakerStrategy(10000, 30000);
+DutyCycleStrategy dewmakerStrategy = DutyCycleStrategy(10000, 30000);
 ConstantValueControlStrategy offStrategy = ConstantValueControlStrategy(0);
 ConstantValueControlStrategy onStrategy = ConstantValueControlStrategy(255);
 

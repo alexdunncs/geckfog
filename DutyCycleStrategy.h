@@ -1,11 +1,11 @@
-#ifndef DEWMAKERSTRATEGY
-#define DEWMAKERSTRATEGY
+#ifndef DUTYCYCLESTRATEGY
+#define DUTYCYCLESTRATEGY
 
 #include "OpenLoopControlStrategy.h"
 
 #include <stdint.h>
 
-class DewmakerStrategy: public OpenLoopControlStrategy {
+class DutyCycleStrategy: public OpenLoopControlStrategy {
   int defaultControlValue = 255;
   int lastControlValue = defaultControlValue;
   
@@ -20,7 +20,7 @@ class DewmakerStrategy: public OpenLoopControlStrategy {
   uint8_t getControlValue();
   void reset();
 
-  DewmakerStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds);
+  DutyCycleStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds);
 };
 
 #endif

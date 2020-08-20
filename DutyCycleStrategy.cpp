@@ -1,16 +1,16 @@
-#include "DewmakerStrategy.h"
+#include "DutyCycleStrategy.h"
 
 #include <Arduino.h>
 
-bool DewmakerStrategy::activationPeriodExceeded() {
+bool DutyCycleStrategy::activationPeriodExceeded() {
   return this->lastControlValue != 0 && millis() > (this->lastOutputChangeAt + this->activationPeriodMilliseconds);
 }
 
-bool DewmakerStrategy::deactivationPeriodExceeded() {
+bool DutyCycleStrategy::deactivationPeriodExceeded() {
   return this->lastControlValue == 0 && millis() > (this->lastOutputChangeAt + this->deactivationPeriodMilliseconds);
 }
 
-uint8_t DewmakerStrategy::getControlValue() {
+uint8_t DutyCycleStrategy::getControlValue() {
   if (activationPeriodExceeded()) {
     this->lastControlValue = 0;
     this->lastOutputChangeAt = millis();
@@ -24,11 +24,11 @@ uint8_t DewmakerStrategy::getControlValue() {
   }
 }
 
-void DewmakerStrategy::reset() {
+void DutyCycleStrategy::reset() {
   this->lastControlValue = this->defaultControlValue;
   this->lastOutputChangeAt = millis();
 }
 
-DewmakerStrategy::DewmakerStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds): activationPeriodMilliseconds(activationPeriodMilliseconds), deactivationPeriodMilliseconds(deactivationPeriodMilliseconds), lastOutputChangeAt(0) {
-  this->strategyName = "DewmakerStrategy";
+DutyCycleStrategy::DutyCycleStrategy(unsigned long int activationPeriodMilliseconds, unsigned long int deactivationPeriodMilliseconds): activationPeriodMilliseconds(activationPeriodMilliseconds), deactivationPeriodMilliseconds(deactivationPeriodMilliseconds), lastOutputChangeAt(0) {
+  this->strategyName = "DutyCycleStrategy";
 }
