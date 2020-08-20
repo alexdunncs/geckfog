@@ -38,7 +38,12 @@ DutyCycleStrategy::DutyCycleStrategy(
     defaultControlValue(defaultControlValue),
     lastControlValue(defaultControlValue),
     lastOutputChangeAt(millis()) {
-  this->strategyName = "DutyCycleStrategy";
+      String name = "DutyCycleStrategy (";
+      name.concat(activationPeriodMilliseconds);
+      name.concat("/");
+      name.concat(deactivationPeriodMilliseconds);
+      name.concat(")");
+  this->strategyName = name;
 }
 
 DutyCycleStrategy::DutyCycleStrategy(
