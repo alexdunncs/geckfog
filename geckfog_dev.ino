@@ -27,8 +27,8 @@ void blink(int times) {
 }
 
 OutputDevice humidifier = OutputDevice(HUMIDIFIER_PIN, "Humidifier");
-//DutyCycleStrategy dewmakerStrategy = DutyCycleStrategy(5000, 15000);
-DutyCycleStrategy humidityMaintenanceStrategy = DutyCycleStrategy(5000, 1000*60*15);
+DutyCycleStrategy dewmakerStrategy = DutyCycleStrategy(5000, 55000);
+DutyCycleStrategy humidityMaintenanceStrategy = DutyCycleStrategy(5000, 1000*60*10);
 //ConstantValueControlStrategy offStrategy = ConstantValueControlStrategy(0);
 //ConstantValueControlStrategy onStrategy = ConstantValueControlStrategy(255);
 
@@ -50,7 +50,8 @@ void setup() {
   //  Serial.println("Connected!");
 
   
-  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*24);
+//  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*24);
+  humidifierController.appendStrategy(&dewmakerStrategy, 1000*60*60*24);
 
   humidifier.init();
   Serial.println("Setup Complete!");
