@@ -2,7 +2,8 @@
 #include <ESP8266HTTPClient.h>
 #include <TimeLib.h>
 
-//Requires installation of the ArduinoJson library - use the Arduino Library Manager
+// Requires installation of the ArduinoJson library and Michael Margolis' Time library - use the Arduino Library Manager
+// ESP8266 libraries require installation and activation of ESP8266-family boards, installable from https://arduino.esp8266.com/stable/package_esp8266com_index.json
 
 #include "InternetTime.h"
 #include "OutputDevice.h"
@@ -13,7 +14,7 @@
 
 
 #include "pin_config_wemos_d1_mini_pro.h"
-#include "secrets.h"
+#include "secrets.h" // Define constants 'ssid' and 'password'
 
 const int HUMIDIFIER_PIN = PIN_D1;
 
