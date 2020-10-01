@@ -17,6 +17,7 @@
 #include "secrets.h" // Define constants 'ssid' and 'password'
 
 const int HUMIDIFIER_PIN = PIN_D1;
+const int MISTER_PIN = PIN_D2;
 
 void blink(int times) {
   for (int i = 0; i < times; i++) {
@@ -28,12 +29,19 @@ void blink(int times) {
 }
 
 OutputDevice humidifier = OutputDevice(HUMIDIFIER_PIN, "Humidifier");
-DutyCycleStrategy dewmakerStrategy = DutyCycleStrategy(5000, 55000);
-DutyCycleStrategy humidityMaintenanceStrategy = DutyCycleStrategy(5000, 1000*60*10);
-//ConstantValueControlStrategy offStrategy = ConstantValueControlStrategy(0);
-//ConstantValueControlStrategy onStrategy = ConstantValueControlStrategy(255);
+OutputDevice mister = OutputDevice(MISTER_PIN, "Mister");
+
+DutyCycleStrategy heavyDewmakerStrategy = DutyCycleStrategy(5000, 15000);
+DutyCycleStrategy dewmakerStrategy = DutyCycleStrategy(5000, 20000);
+DutyCycleStrategy humidityMaintenanceStrategy = DutyCycleStrategy(8000, 1000*60*15); //up from 5000 on
+
+DutyCycleStrategy mistingStrategy = DutyCycleStrategy(5000, 1000*10);
+
+ConstantValueControlStrategy onStrategy = ConstantValueControlStrategy(255);
+ConstantValueControlStrategy offStrategy = ConstantValueControlStrategy(0);
 
 OutputDeviceController humidifierController = OutputDeviceController(humidifier);
+OutputDeviceController misterController = OutputDeviceController(mister);
 
 void setup() {
   // initialize pins
@@ -50,11 +58,20 @@ void setup() {
   //  }
   //  Serial.println("Connected!");
 
+  //  8:45pm start
+  humidifierController.appendStrategy(&heavyDewmakerStrategy, 1000*60*60*2 - 1000*60*50); //8:45pm-10pm
+  humidifierController.appendStrategy(&dewmakerStrategy, 1000*60*60*8); //10pm-6am
+  humidifierController.appendStrategy(&offStrategy, 1000*60*45); //6am-6:45am
+  humidifierController.appendStrategy(&offStrategy, 1000*60*60*3  - 1000*60*45); //6:45am-9am
+  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*11); //9am-8pm
+  humidifierController.appendStrategy(&heavyDewmakerStrategy, 1000*60*50); //8pm-8:45h
   
-//  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*24);
-  humidifierController.appendStrategy(&dewmakerStrategy, 1000*60*60*24);
+//  misterController.appendStrategy(&mistingStrategy, 1000*60*60*24);
+
+  
 
   humidifier.init();
+  mister.init();
   Serial.println("Setup Complete!");
 }
 
@@ -62,4 +79,5 @@ void setup() {
 
 void loop() {
   humidifierController.proc();
+  misterController.proc();
 }
