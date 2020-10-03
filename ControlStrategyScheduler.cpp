@@ -22,7 +22,7 @@ StrategySchedule ControlStrategyScheduler::getActiveSchedule(SimpleTime currentT
   }
 
 //Otherwise, return the latest schedule whose activationTime has passed
-  uint8_t activeScheduleIdx;
+  uint8_t activeScheduleIdx = lastIdx;
   for (int i = 0; i < this->strategyCount; i++) {
     if (this->strategySchedules[i].activationTime <= currentTime) {
       activeScheduleIdx = i;
