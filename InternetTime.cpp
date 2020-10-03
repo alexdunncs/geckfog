@@ -9,9 +9,11 @@ String InternetTime::getUtcString() {
     
     http.begin(TIME_SERVER_URL);
     int responseCode = http.GET();
-
-    StaticJsonDocument<256> response;
-    deserializeJson(response, http.getString());
     String payload = http.getString();
+    
+    StaticJsonDocument<256> response;
+    deserializeJson(response, payload);
+    String dateString = response["datetime"];
+    Serial.println(dateString);
     return response["datetime"];
 }
