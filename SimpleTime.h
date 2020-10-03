@@ -12,6 +12,8 @@ class SimpleTime {
 
 public:
   void print();
+  bool isOverflowed();
+  void resetOverflow();
 
   SimpleTime(int hour, int minute, int second);
 

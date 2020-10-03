@@ -12,6 +12,15 @@ void SimpleTime::print() {
   Serial.println(str);
 }
 
+
+bool SimpleTime::isOverflowed(){
+  return this->overflowed;
+}
+
+void SimpleTime::resetOverflow(){
+  this->overflowed = false;
+}
+
 SimpleTime::SimpleTime(int hour, int minute, int second) {
   if (second >= 60) {
     minute += second / 60;
