@@ -9,26 +9,31 @@ void ControlStrategyScheduler::printNewStrategyMessage() {
 }
 
 StrategySchedule ControlStrategyScheduler::getActiveSchedule(SimpleTime currentTime) {
+  const uint8_t lastIdx = this->strategyCount - 1;
+  uint8_t activeScheduleIdx;
+
 // Special case of single schedule
-  if (this->strategyCount == 1) {
-    return this->strategySchedules[0];
-  }
-
-//  Special case of latest schedule active and time rolled over past midnight
-  uint8_t lastIdx = this->strategyCount - 1;
-  if (this->lastActiveStrategyIdx == lastIdx
-      && currentTime < this->strategySchedules[0].activationTime) {
-    return this->strategySchedules[lastIdx];      
-  }
-
-//Otherwise, return the latest schedule whose activationTime has passed
-  uint8_t activeScheduleIdx = lastIdx;
-  for (int i = 0; i < this->strategyCount; i++) {
-    if (this->strategySchedules[i].activationTime <= currentTime) {
-      activeScheduleIdx = i;
+ if (this->strategyCount == 0) {
+  activeScheduleIdx = lastIdx;
+ }
+  
+//  Special case of latest or earliest schedule active and time rolled over past midnight
+  else if ((this->lastActiveStrategyIdx == lastIdx || this->lastActiveStrategyIdx == 0)
+      && currentTime < this->strategySchedules[0].activationTime) { 
+    activeScheduleIdx = lastIdx;  
+  } 
+  
+//Otherwise, return the latest schedule whose activationTime has passed  
+  else {
+    activeScheduleIdx = lastIdx;
+    for (int i = 0; i < this->strategyCount; i++) {
+      if (this->strategySchedules[i].activationTime <= currentTime) {
+        activeScheduleIdx = i;
+      }
     }
   }
 
+  
   if (activeScheduleIdx != this->lastActiveStrategyIdx) {
     this->lastActiveStrategyIdx = activeScheduleIdx;
     this->printNewStrategyMessage();
@@ -46,7 +51,12 @@ void ControlStrategyScheduler::appendStrategyToSchedule(ControlStrategy* strateg
     Serial.print("Added new strategy to schedule: ");
     Serial.println(strategy->getName());
   } else {
-    Serial.println("Failed to add stratedy to scheduler: Max strategy count exceeded.");
+    Serial.println("Failed to add strategy to scheduler: Max strategy count exceeded.");
+  }
+
+  if (this->strategyCount == 1) {
+    Serial.print("Controller will start up using strategy: ");
+    Serial.println(strategy->getName());
   }
 }
 
