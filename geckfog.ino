@@ -60,14 +60,11 @@ void setup() {
     Serial.println("Connected!");
 
   humidifierController.appendStrategy(&offStrategy, SimpleTime(6,0,0)); //6am-9am
-  humidifierController.appendStrategy(&humidityMaintenanceStrategy, SimpleTime(9,0,0)); //9am-12pm
-  humidifierController.appendStrategy(&humidityMaintenanceStrategy, SimpleTime(12,0,0)); //12pm-8pm
+  humidifierController.appendStrategy(&humidityMaintenanceStrategy, SimpleTime(9,0,0)); //9am-8pm
   humidifierController.appendStrategy(&heavyDewmakerStrategy, SimpleTime(20,0,0)); //8pm-10pm
   humidifierController.appendStrategy(&dewmakerStrategy, SimpleTime(22,0,0)); //10pm-6am
   
 //  misterController.appendStrategy(&mistingStrategy, 1000*60*60*24);
-
-  
 
   humidifier.init();
   mister.init();
