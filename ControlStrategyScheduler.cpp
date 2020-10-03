@@ -1,40 +1,45 @@
 #include "ControlStrategyScheduler.h"
 
 #include <Arduino.h>
-
-void ControlStrategyScheduler::incrementActiveSchedule() {
-  this->activeStrategyIdx = (this->activeStrategyIdx + 1) % this->strategyCount;
-  this->lastStrategyChange = millis();
-  this->nextStrategyChange = this->lastStrategyChange + (this->getActiveSchedule().duration);
-  this->printNewStrategyMessage();
-  this->getActiveStrategy()->reset();
-}
+#include "InternetTime.h"
 
 void ControlStrategyScheduler::printNewStrategyMessage() {
     Serial.print("Activated new strategy: ");
-    Serial.println(this->strategySchedules[this->activeStrategyIdx].strategy->getName());
+    Serial.println(this->strategySchedules[this->lastActiveStrategyIdx].strategy->getName());
 }
 
-StrategySchedule ControlStrategyScheduler::getActiveSchedule() {
-//  Serial.print("Last: ");
-//  Serial.print(this->lastStrategyChange);
-//  Serial.print("    Current: ");
-//  Serial.print(millis());
-//  Serial.print("    Next: ");
-//  Serial.println(this->nextStrategyChange);
-  
-  if (this->nextStrategyChange > this->lastStrategyChange && millis() >= nextStrategyChange) {
-    this->incrementActiveSchedule();
-  } else if (this->nextStrategyChange < this->lastStrategyChange && millis() < this->lastStrategyChange && millis() > this->nextStrategyChange) {
-    this->incrementActiveSchedule();
-    this->printNewStrategyMessage();
+StrategySchedule ControlStrategyScheduler::getActiveSchedule(SimpleTime currentTime) {
+// Special case of single schedule
+  if (this->strategyCount == 1) {
+    return this->strategySchedules[0];
   }
 
-  return this->strategySchedules[activeStrategyIdx];
+//  Special case of latest schedule active and time rolled over past midnight
+  uint8_t lastIdx = this->strategyCount - 1;
+  if (this->lastActiveStrategyIdx == lastIdx
+      && currentTime < this->strategySchedules[0].activationTime) {
+    return this->strategySchedules[lastIdx];      
+  }
+
+//Otherwise, return the latest schedule whose activationTime has passed
+  uint8_t activeScheduleIdx;
+  for (int i = 0; i < this->strategyCount; i++) {
+    if (this->strategySchedules[i].activationTime <= currentTime) {
+      activeScheduleIdx = i;
+    }
+  }
+
+  if (activeScheduleIdx != this->lastActiveStrategyIdx) {
+    this->lastActiveStrategyIdx = activeScheduleIdx;
+    this->printNewStrategyMessage();
+  }
+  
+  return this->strategySchedules[activeScheduleIdx];
 }
 
-void ControlStrategyScheduler::appendStrategyToSchedule(ControlStrategy* strategy, unsigned long int duration) {
-  StrategySchedule schedule = StrategySchedule(strategy, duration);
+void ControlStrategyScheduler::appendStrategyToSchedule(ControlStrategy* strategy, SimpleTime activationTime) {
+//  CURRENTLY ASSUMES ENTRY IN ASCENDING TIME ORDER
+  StrategySchedule schedule = StrategySchedule(strategy, activationTime);
   if (this->strategyCount < this->MAX_STRATEGY_COUNT) {   
     this->strategySchedules[this->strategyCount] = schedule;
     this->strategyCount++;
@@ -43,15 +48,13 @@ void ControlStrategyScheduler::appendStrategyToSchedule(ControlStrategy* strateg
   } else {
     Serial.println("Failed to add stratedy to scheduler: Max strategy count exceeded.");
   }
-
-  if (this->strategyCount == 1) {
-    this->nextStrategyChange = millis() + duration;
-  }
 }
 
 ControlStrategy* ControlStrategyScheduler::getActiveStrategy() {
+  SimpleTime currentTime = InternetTime::getSimpleTime();
+  
   if (this->strategyCount > 0) {
-    return this->getActiveSchedule().strategy;  
+    return this->getActiveSchedule(currentTime).strategy;  
   } else {
     return nullptr;  
   }

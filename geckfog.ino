@@ -37,6 +37,7 @@ DutyCycleStrategy dewmakerStrategy = DutyCycleStrategy(5000, 20000);
 DutyCycleStrategy humidityMaintenanceStrategy = DutyCycleStrategy(8000, 1000*60*15); //up from 5000 on
 
 DutyCycleStrategy mistingStrategy = DutyCycleStrategy(5000, 1000*10);
+DutyCycleStrategy flipFlop = DutyCycleStrategy(15000, 15000);
 
 ConstantValueControlStrategy onStrategy = ConstantValueControlStrategy(255);
 ConstantValueControlStrategy offStrategy = ConstantValueControlStrategy(0);
@@ -59,12 +60,13 @@ void setup() {
     }
     Serial.println("Connected!");
 
-  // noon start
-  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*8); //12pm-8pm
-  humidifierController.appendStrategy(&heavyDewmakerStrategy, 1000*60*60*2); //8pm-10pm
-  humidifierController.appendStrategy(&dewmakerStrategy, 1000*60*60*8); //10pm-6am
-  humidifierController.appendStrategy(&offStrategy, 1000*60*60*3); //6am-9am
-  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*3); //9am-12pm
+  
+  humidifierController.appendStrategy(&offStrategy, SimpleTime(6,0,0)); //6am-9am
+  humidifierController.appendStrategy(&humidityMaintenanceStrategy, SimpleTime(9,0,0)); //9am-12pm
+  humidifierController.appendStrategy(&humidityMaintenanceStrategy, SimpleTime(12,0,0)); //12pm-8pm
+  humidifierController.appendStrategy(&heavyDewmakerStrategy, SimpleTime(20,0,0)); //8pm-10pm
+  humidifierController.appendStrategy(&dewmakerStrategy, SimpleTime(22,0,0)); //10pm-6am
+  
 //  misterController.appendStrategy(&mistingStrategy, 1000*60*60*24);
 
   
@@ -77,7 +79,6 @@ void setup() {
 
 
 void loop() {
-  InternetTime::getSimpleTime();
   humidifierController.proc();
   misterController.proc();
 }

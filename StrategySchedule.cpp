@@ -1,5 +1,5 @@
 #include "StrategySchedule.h"
 
-StrategySchedule::StrategySchedule(ControlStrategy* strategy, unsigned long int duration): strategy(strategy), duration(duration) {}
+StrategySchedule::StrategySchedule(ControlStrategy* strategy, SimpleTime activationTime): strategy(strategy), activationTime(activationTime) {}
 
-StrategySchedule::StrategySchedule(): StrategySchedule(nullptr, 0) {}
+StrategySchedule::StrategySchedule(): StrategySchedule(nullptr, SimpleTime(0,0,0)) {}
