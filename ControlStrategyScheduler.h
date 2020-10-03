@@ -2,22 +2,19 @@
 #define CONTROLSTRATEGYSCHEDULER
 
 #include "StrategySchedule.h"
+#include "SimpleTime.h"
 
 class ControlStrategyScheduler {
   static const uint8_t MAX_STRATEGY_COUNT = 32;
   StrategySchedule strategySchedules[MAX_STRATEGY_COUNT];
   uint8_t strategyCount = 0;
-  uint8_t activeStrategyIdx = 0;
+  uint8_t lastActiveStrategyIdx = 0;
   
-  unsigned long int lastStrategyChange = 0;
-  unsigned long int nextStrategyChange = 0;
-  
-  void incrementActiveSchedule();
   void printNewStrategyMessage();
-  StrategySchedule getActiveSchedule();
+  StrategySchedule getActiveSchedule(SimpleTime currentTime);
 
   public:
-  void appendStrategyToSchedule(ControlStrategy* strategy, unsigned long int duration);
+  void appendStrategyToSchedule(ControlStrategy* strategy, SimpleTime activationTime);
   ControlStrategy* getActiveStrategy();
   void printSchedule();
 

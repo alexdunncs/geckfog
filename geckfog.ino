@@ -59,15 +59,12 @@ void setup() {
     }
     Serial.println("Connected!");
 
-  // noon start
-  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*8); //12pm-8pm
-  humidifierController.appendStrategy(&heavyDewmakerStrategy, 1000*60*60*2); //8pm-10pm
-  humidifierController.appendStrategy(&dewmakerStrategy, 1000*60*60*8); //10pm-6am
-  humidifierController.appendStrategy(&offStrategy, 1000*60*60*3); //6am-9am
-  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*3); //9am-12pm
-//  misterController.appendStrategy(&mistingStrategy, 1000*60*60*24);
-
+  humidifierController.appendStrategy(&offStrategy, SimpleTime(6,0,0)); //6am-9am
+  humidifierController.appendStrategy(&humidityMaintenanceStrategy, SimpleTime(9,0,0)); //9am-8pm
+  humidifierController.appendStrategy(&heavyDewmakerStrategy, SimpleTime(20,0,0)); //8pm-10pm
+  humidifierController.appendStrategy(&dewmakerStrategy, SimpleTime(22,0,0)); //10pm-6am
   
+//  misterController.appendStrategy(&mistingStrategy, 1000*60*60*24);
 
   humidifier.init();
   mister.init();
@@ -77,7 +74,6 @@ void setup() {
 
 
 void loop() {
-  InternetTime::getSimpleTime();
   humidifierController.proc();
   misterController.proc();
 }

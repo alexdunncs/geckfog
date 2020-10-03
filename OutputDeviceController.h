@@ -4,6 +4,7 @@
 #include "OutputDevice.h"
 #include "ControlStrategy.h"
 #include "ControlStrategyScheduler.h"
+#include "SimpleTime.h"
 
 class OutputDeviceController {
   OutputDevice device;
@@ -14,7 +15,7 @@ class OutputDeviceController {
   void printControlValue();
 
   public:
-  void appendStrategy(ControlStrategy* newStrategy, unsigned long int duration);
+  void appendStrategy(ControlStrategy* newStrategy, SimpleTime activationTime);
   void proc();
   void enable();
   void disable(int manualValue);

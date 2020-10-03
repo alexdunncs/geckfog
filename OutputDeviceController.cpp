@@ -8,8 +8,8 @@ void OutputDeviceController::printControlValue() {
   Serial.println(this->latestControlValue);
 }
 
-void OutputDeviceController::appendStrategy(ControlStrategy* newStrategy, unsigned long int duration) {
-  this->scheduler.appendStrategyToSchedule(newStrategy, duration);
+void OutputDeviceController::appendStrategy(ControlStrategy* newStrategy, SimpleTime activationTime) {
+  this->scheduler.appendStrategyToSchedule(newStrategy, activationTime);
   this->proc();
 }
 
@@ -30,7 +30,7 @@ void OutputDeviceController::proc() {
   this->device.setOutput(this->latestControlValue);
   
   if (this->latestControlValue != previousControlValue) {
-    this->printControlValue();
+//    this->printControlValue();
   }
   
 }
