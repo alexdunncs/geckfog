@@ -50,65 +50,34 @@ void setup() {
 
   Serial.begin(57600);
   delay(100); // Give time to initialise.
-//    WiFi.begin(Secret::ssid, Secret::password);
-//  
-//    Serial.println("Connecting to wifi...");
-//    while (WiFi.status() != WL_CONNECTED) {  //Wait for the WiFI connection completion
-//      delay(500);
-//      Serial.println("Waiting for connection");
-//    }
-//    Serial.println("Connected!");
-//
-//  // noon start
-//  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*8); //12pm-8pm
-//  humidifierController.appendStrategy(&heavyDewmakerStrategy, 1000*60*60*2); //8pm-10pm
-//  humidifierController.appendStrategy(&dewmakerStrategy, 1000*60*60*8); //10pm-6am
-//  humidifierController.appendStrategy(&offStrategy, 1000*60*60*3); //6am-9am
-//  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*3); //9am-12pm
-////  misterController.appendStrategy(&mistingStrategy, 1000*60*60*24);
-//
-//  
-//
-//  humidifier.init();
-//  mister.init();
-//  Serial.println("Setup Complete!");
+    WiFi.begin(Secret::ssid, Secret::password);
+  
+    Serial.println("Connecting to wifi...");
+    while (WiFi.status() != WL_CONNECTED) {  //Wait for the WiFI connection completion
+      delay(500);
+      Serial.println("Waiting for connection");
+    }
+    Serial.println("Connected!");
 
-SimpleTime tMin = SimpleTime(0,0,0);
-SimpleTime tMid = SimpleTime(12,0,0);
-SimpleTime tMax = SimpleTime(23,59,59);
+  // noon start
+  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*8); //12pm-8pm
+  humidifierController.appendStrategy(&heavyDewmakerStrategy, 1000*60*60*2); //8pm-10pm
+  humidifierController.appendStrategy(&dewmakerStrategy, 1000*60*60*8); //10pm-6am
+  humidifierController.appendStrategy(&offStrategy, 1000*60*60*3); //6am-9am
+  humidifierController.appendStrategy(&humidityMaintenanceStrategy, 1000*60*60*3); //9am-12pm
+//  misterController.appendStrategy(&mistingStrategy, 1000*60*60*24);
 
-tMin.print();
-tMid.print();
-tMax.print();
-Serial.println(tMin < tMid ? "PASS" : "FAIL");
-Serial.println(tMid < tMax ? "PASS" : "FAIL");
-Serial.println(tMax == tMax ? "PASS" : "FAIL");
-Serial.println(!(tMin == tMid) ? "PASS" : "FAIL");
+  
 
-tMin = tMin + SimpleTime(0,0,45);
-tMin.print();
-
-tMin = tMin + SimpleTime(0,0,45);
-tMin.print();
-
-tMin = tMin + SimpleTime(0,45,0);
-tMin.print();
-
-tMin = tMin + SimpleTime(0,45,0);
-tMin.print();
-
-tMax = tMax + SimpleTime(0,0,1);
-tMax.print();
-
-
-
-
+  humidifier.init();
+  mister.init();
+  Serial.println("Setup Complete!");
 }
 
 
 
 void loop() {
-//  InternetTime::getUtcString();
-//  humidifierController.proc();
-//  misterController.proc();
+  InternetTime::getSimpleTime();
+  humidifierController.proc();
+  misterController.proc();
 }

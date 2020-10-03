@@ -17,3 +17,16 @@ String InternetTime::getUtcString() {
     Serial.println(dateString);
     return response["datetime"];
 }
+
+SimpleTime InternetTime::getSimpleTime() {
+  String timeStr = InternetTime::getUtcString();
+  uint8_t hour = timeStr.substring(11,13).toInt();
+  uint8_t minute = timeStr.substring(14,16).toInt();
+  uint8_t second = timeStr.substring(17,19).toInt();
+  
+  Serial.println(hour);
+  Serial.println(minute);
+  Serial.println(second);
+  
+  return SimpleTime(hour, minute, second);
+}
