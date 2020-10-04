@@ -1,10 +1,12 @@
 #ifndef CONTROLSTRATEGYSCHEDULER
 #define CONTROLSTRATEGYSCHEDULER
 
+#include "HybridClock.h"
 #include "StrategySchedule.h"
 #include "SimpleTime.h"
 
 class ControlStrategyScheduler {
+  HybridClock timeClock;
   static const uint8_t MAX_STRATEGY_COUNT = 32;
   StrategySchedule strategySchedules[MAX_STRATEGY_COUNT];
   uint8_t strategyCount = 0;

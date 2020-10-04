@@ -9,7 +9,7 @@ void SimpleTime::print() {
   str += ":";
   str += this->second;
 
-  Serial.println(str);
+  Serial.print(str);
 }
 
 

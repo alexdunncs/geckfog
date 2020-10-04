@@ -61,7 +61,7 @@ void ControlStrategyScheduler::appendStrategyToSchedule(ControlStrategy* strateg
 }
 
 ControlStrategy* ControlStrategyScheduler::getActiveStrategy() {
-  SimpleTime currentTime = InternetTime::getSimpleTime();
+  SimpleTime currentTime = this->timeClock.getTime();
   
   if (this->strategyCount > 0) {
     return this->getActiveSchedule(currentTime).strategy;  
@@ -82,4 +82,4 @@ void ControlStrategyScheduler::printSchedule() {
   
 }
 
-ControlStrategyScheduler::ControlStrategyScheduler() {}
+ControlStrategyScheduler::ControlStrategyScheduler(): timeClock(HybridClock()){}

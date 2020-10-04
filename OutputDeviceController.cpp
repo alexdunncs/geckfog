@@ -10,7 +10,7 @@ void OutputDeviceController::printControlValue() {
 
 void OutputDeviceController::appendStrategy(ControlStrategy* newStrategy, SimpleTime activationTime) {
   this->scheduler.appendStrategyToSchedule(newStrategy, activationTime);
-  this->proc();
+//  this->proc();
 }
 
 void OutputDeviceController::proc() {
@@ -30,7 +30,7 @@ void OutputDeviceController::proc() {
   this->device.setOutput(this->latestControlValue);
   
   if (this->latestControlValue != previousControlValue) {
-//    this->printControlValue();
+    this->printControlValue();
   }
   
 }
@@ -43,7 +43,7 @@ void OutputDeviceController::enable(){
   }
   
   this->enabled = true;
-  this->proc();  
+//  this->proc();  
 }
 
 void OutputDeviceController::disable(int manualValue) {
@@ -56,7 +56,7 @@ void OutputDeviceController::disable(int manualValue) {
   this->enabled = false;
   this->device.setOutput(manualValue);
   this->latestControlValue = manualValue;
-  this->proc();
+//  this->proc();
 }
 
 void OutputDeviceController::disable() {

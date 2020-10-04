@@ -36,8 +36,6 @@ DutyCycleStrategy heavyDewmakerStrategy = DutyCycleStrategy(5000, 15000);
 DutyCycleStrategy dewmakerStrategy = DutyCycleStrategy(5000, 20000);
 DutyCycleStrategy humidityMaintenanceStrategy = DutyCycleStrategy(8000, 1000*60*15); //up from 5000 on
 
-DutyCycleStrategy mistingStrategy = DutyCycleStrategy(5000, 1000*10);
-
 ConstantValueControlStrategy onStrategy = ConstantValueControlStrategy(255);
 ConstantValueControlStrategy offStrategy = ConstantValueControlStrategy(0);
 
@@ -63,8 +61,10 @@ void setup() {
   humidifierController.appendStrategy(&humidityMaintenanceStrategy, SimpleTime(9,0,0)); //9am-8pm
   humidifierController.appendStrategy(&heavyDewmakerStrategy, SimpleTime(20,0,0)); //8pm-10pm
   humidifierController.appendStrategy(&dewmakerStrategy, SimpleTime(22,0,0)); //10pm-6am
-  
-//  misterController.appendStrategy(&mistingStrategy, 1000*60*60*24);
+
+//  misterController.appendStrategy(&offStrategy, SimpleTime(0,0,00));
+//  misterController.appendStrategy(&onStrategy, SimpleTime(12,0,0));
+//  misterController.appendStrategy(&offStrategy, SimpleTime(12,0,10));
 
   humidifier.init();
   mister.init();
