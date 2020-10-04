@@ -8,6 +8,7 @@
 #include "ConstantValueControlStrategy.h"
 #include "ControlStrategyScheduler.h"
 #include "DutyCycleStrategy.h"
+#include "HybridClock.h"
 #include "InternetTime.h"
 #include "OutputDevice.h"
 #include "OutputDeviceController.h"
@@ -42,6 +43,7 @@ ConstantValueControlStrategy offStrategy = ConstantValueControlStrategy(0);
 OutputDeviceController humidifierController = OutputDeviceController(humidifier);
 OutputDeviceController misterController = OutputDeviceController(mister);
 
+
 void setup() {
   // initialize pins
   pinMode(LED_BUILTIN, OUTPUT);
@@ -62,9 +64,11 @@ void setup() {
   humidifierController.appendStrategy(&heavyDewmakerStrategy, SimpleTime(20,0,0)); //8pm-10pm
   humidifierController.appendStrategy(&dewmakerStrategy, SimpleTime(22,0,0)); //10pm-6am
 
-//  misterController.appendStrategy(&offStrategy, SimpleTime(0,0,00));
-//  misterController.appendStrategy(&onStrategy, SimpleTime(12,0,0));
-//  misterController.appendStrategy(&offStrategy, SimpleTime(12,0,10));
+  misterController.appendStrategy(&offStrategy, SimpleTime(0,0,00));
+  misterController.appendStrategy(&onStrategy, SimpleTime(12,00,0));
+  misterController.appendStrategy(&offStrategy, SimpleTime(12,00,10));
+  misterController.appendStrategy(&onStrategy, SimpleTime(20,00,0));
+  misterController.appendStrategy(&offStrategy, SimpleTime(20,00,10));
 
   humidifier.init();
   mister.init();
