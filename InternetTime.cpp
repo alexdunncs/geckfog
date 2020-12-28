@@ -3,7 +3,7 @@
 #include "InternetTime.h"
 
 String InternetTime::getUtcString() {
-    const char* TIME_SERVER_URL = "http://worldtimeapi.org/api/ip";
+    const char* TIME_SERVER_URL = "http://worldclockapi.com/api/json/pst/now";
     
     HTTPClient http;
     
@@ -13,8 +13,8 @@ String InternetTime::getUtcString() {
     
     StaticJsonDocument<256> response;
     deserializeJson(response, payload);
-    String dateString = response["datetime"];
-    return response["datetime"];
+//    String dateString = response["currentDateTime"];
+    return response["currentDateTime"];
 }
 
 SimpleTime InternetTime::getSimpleTime() {

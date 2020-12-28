@@ -3,10 +3,17 @@
 
 void HybridClock::sync() {
   Serial.print("Syncing time with internet... ");
+  SimpleTime newTime = InternetTime::getSimpleTime();
+
+  if (newTime == SimpleTime(0,0,0)) {
+    Serial.print("Synced at midnight or sync failed.");
+  }
+    
   this->lastSyncTime = InternetTime::getSimpleTime();
   this->lastSyncAt = millis();
+  
   this->lastSyncTime.print();
-  Serial.println("");
+  Serial.println("");  
 }
 
 SimpleTime HybridClock::getTime() {
